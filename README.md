@@ -12,8 +12,20 @@ PromptChain 是一套面向 AI 编程助手的**链式提示（Prompt Chaining�
 
 ## 五阶段流程
 
-```
-分析 → 生成 → 选择 → 补充证据 → 综合
+```mermaid
+flowchart LR
+    A["1. 分析<br/>Analyze"] --> B["2. 生成<br/>Generate"]
+    B --> C["3. 选择<br/>Select"]
+    C --> D["4. 补充证据<br/>Supplement"]
+    D --> E["5. 综合<br/>Synthesize"]
+
+    E -. "遇到问题时回溯" .-> A
+
+    style A fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style B fill:#50b86c,stroke:#358a4c,color:#fff
+    style C fill:#f5a623,stroke:#c47d0e,color:#fff
+    style D fill:#9b59b6,stroke:#7d3c98,color:#fff
+    style E fill:#e74c3c,stroke:#c0392b,color:#fff
 ```
 
 | 阶段 | 目标 |
@@ -24,7 +36,30 @@ PromptChain 是一套面向 AI 编程助手的**链式提示（Prompt Chaining�
 | **补充证据（Supplement）** | 细化实施细节和测试策略 |
 | **综合（Synthesize）** | 逐步执行，验证结果 |
 
-根据任务规模可灵活适配为精简模式（小型）、标准模式（中型）或深度模式（大型）。
+根据任务规模可灵活适配：
+
+```mermaid
+flowchart TD
+    Task["任务输入"] --> Judge{"评估规模"}
+
+    Judge -->|"< 3 个文件"| S["精简模式"]
+    Judge -->|"3-10 个文件"| M["标准模式"]
+    Judge -->|"> 10 个文件"| L["深度模式"]
+
+    S --> S1["合并分析+生成+选择<br/>快速定位方案"]
+    S1 --> S2["直接实施"]
+
+    M --> M1["完整五阶段流程<br/>每阶段简洁但不省略"]
+
+    L --> L1["每阶段详细展开<br/>增加架构评审"]
+    L1 --> L2["考虑分批实施<br/>拆分为多个子链"]
+
+    style Task fill:#34495e,stroke:#2c3e50,color:#fff
+    style Judge fill:#f39c12,stroke:#d68910,color:#fff
+    style S fill:#27ae60,stroke:#1e8449,color:#fff
+    style M fill:#2980b9,stroke:#1f6fa5,color:#fff
+    style L fill:#8e44ad,stroke:#6c3483,color:#fff
+```
 
 ## 仓库结构
 
