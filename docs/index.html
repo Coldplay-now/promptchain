@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptChain — AI 技能仓库</title>
+<style>
+  :root {
+    --blue: #4a90d9;
+    --green: #50b86c;
+    --orange: #f5a623;
+    --purple: #9b59b6;
+    --red: #e74c3c;
+    --dark: #1a1a2e;
+    --darker: #12121f;
+    --card: #222240;
+    --card-border: #2e2e52;
+    --text: #e0e0e0;
+    --text-dim: #8888a8;
+    --accent-glow: rgba(74, 144, 217, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
+    background: var(--darker);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(74,144,217,0.12) 0%, transparent 100%),
+      radial-gradient(ellipse 40% 30% at 80% 20%, rgba(155,89,182,0.08) 0%, transparent 100%),
+      var(--darker);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    color: var(--blue);
+    border: 1px solid rgba(74,144,217,0.3);
+    background: rgba(74,144,217,0.08);
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #a0c4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(74,144,217,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(74,144,217,0.45);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+  }
+  .btn-secondary:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    transform: translateY(-2px);
+  }
+
+  /* ===== Sections ===== */
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 650px;
+    margin-bottom: 3rem;
+  }
+
+  /* ===== Skill Cards ===== */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 560px) {
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+  .skill-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(74,144,217,0.4);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .skill-card.chain::before { background: linear-gradient(90deg, var(--blue), var(--green)); }
+  .skill-card.drawit::before { background: linear-gradient(90deg, var(--orange), var(--red)); }
+
+  .skill-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .skill-card.chain .skill-icon { background: rgba(74,144,217,0.15); }
+  .skill-card.drawit .skill-icon { background: rgba(245,166,35,0.15); }
+
+  .skill-card h3 {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 0.75rem;
+  }
+  .skill-card > p {
+    color: var(--text-dim);
+    margin-bottom: 2rem;
+  }
+
+  /* ===== Flow ===== */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .flow-step {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    padding: 0 6px;
+  }
+
+  /* ===== Feature list in card ===== */
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .feature-list li {
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+  }
+  .feature-list li::before {
+    content: ">";
+    position: absolute;
+    left: 0;
+    color: var(--blue);
+    font-weight: bold;
+    font-family: monospace;
+  }
+  .skill-card.drawit .feature-list li::before { color: var(--orange); }
+
+  /* ===== How it works ===== */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    counter-reset: step;
+  }
+
+  .step {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 2rem 1.5rem;
+    counter-increment: step;
+    position: relative;
+  }
+
+  .step::before {
+    content: counter(step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(74,144,217,0.15);
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .step h4 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+  }
+  .step p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  /* ===== Prompt Examples ===== */
+  .prompt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .prompt-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: all 0.25s;
+  }
+  .prompt-card:hover {
+    border-color: rgba(74,144,217,0.3);
+  }
+
+  .prompt-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .prompt-tag.chain { background: rgba(74,144,217,0.15); color: var(--blue); }
+  .prompt-tag.drawit { background: rgba(245,166,35,0.15); color: var(--orange); }
+
+  .prompt-text {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* ===== Tools (DrawIt) ===== */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .tool-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all 0.25s;
+  }
+  .tool-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(74,144,217,0.3);
+  }
+
+  .tool-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .tool-item h4 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  .tool-item p {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+
+  /* ===== IDE ===== */
+  .ide-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 700px) {
+    .ide-grid { grid-template-columns: 1fr; }
+  }
+
+  .ide-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .ide-item h4 { color: #fff; margin-bottom: 0.5rem; }
+
+  .ide-file {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--green);
+    background: rgba(80,184,108,0.1);
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+  }
+
+  /* ===== Principles ===== */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .principle {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .principle-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: rgba(74,144,217,0.12);
+    color: var(--blue);
+  }
+
+  .principle strong { color: #fff; }
+  .principle span { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* ===== Footer ===== */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--card-border);
+  }
+  footer a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* ===== Divider ===== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ===== Mermaid live ===== */
+  .mermaid-wrapper {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
+  .mermaid-wrapper .mermaid { min-width: 0; }
+  .mermaid-wrapper .mermaid svg { max-width: 100%; height: auto; }
+</style>
+</head>
+<body>
+
+<!-- ==================== Hero ==================== -->
+<header class="hero">
+  <span class="hero-badge">Open Source &middot; MIT License</span>
+  <h1>PromptChain</h1>
+  <p>面向 AI 编程助手的技能（Skill）集合<br>让 AI 在对话中自动遵循结构化的工作流程</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://github.com/Coldplay-now/promptchain">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+    <a class="btn btn-secondary" href="#skills">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      浏览技能
+    </a>
+  </div>
+</header>
+
+<!-- ==================== Skills ==================== -->
+<section id="skills">
+  <p class="section-label">Skills</p>
+  <h2 class="section-title">已收录的技能</h2>
+  <p class="section-desc">每个 Skill 是一套完整的交互流程定义，可独立嵌入 AI IDE 配置中使用。</p>
+
+  <div class="skills-grid">
+    <!-- Prompt Chaining -->
+    <div class="skill-card chain">
+      <div class="skill-icon">&#9939;</div>
+      <h3>Prompt Chaining</h3>
+      <p>将复杂编程任务拆解为有序阶段，逐步精炼，获得高质量结果。</p>
+      <div class="flow">
+        <span class="flow-step" style="background:var(--blue)">分析</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--green)">生成</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--orange)">选择</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--purple)">补充</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--red)">综合</span>
+      </div>
+      <ul class="feature-list">
+        <li>先理解上下文，再动手写代码</li>
+        <li>强制产出多方案并对比选优</li>
+        <li>根据任务规模自动降档/升档</li>
+        <li>内置 5 种场景模板 + IDE 集成指南</li>
+      </ul>
+    </div>
+
+    <!-- DrawIt -->
+    <div class="skill-card drawit">
+      <div class="skill-icon">&#9998;</div>
+      <h3>DrawIt</h3>
+      <p>交互式概念可视化，通过对话将抽象想法变成直观的图形。</p>
+      <div class="flow">
+        <span class="flow-step" style="background:var(--blue)">理解意图</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--orange)">选择方案</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--green)">绘制迭代</span>
+      </div>
+      <ul class="feature-list">
+        <li>支持 Mermaid / SVG / HTML / Excalidraw</li>
+        <li>15 种 Mermaid 图表类型速查</li>
+        <li>10 种场景绘图模板开箱即用</li>
+        <li>三套配色方案（专业/简洁/暗色）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== Prompt Chaining Detail ==================== -->
+<section id="chain">
+  <p class="section-label">Skill 1</p>
+  <h2 class="section-title">Prompt Chaining &mdash; 链式提示</h2>
+  <p class="section-desc">五阶段流程：分析现状，生成方案，择优选择，补充细节，综合执行。遇到问题时可回溯到任意阶段。</p>
+
+  <div class="mermaid-wrapper">
+    <pre class="mermaid">
+flowchart LR
+    A["1. 分析\nAnalyze"]
+    B["2. 生成\nGenerate"]
+    C["3. 选择\nSelect"]
+    D["4. 补充\nSupplement"]
+    E["5. 综合\nSynthesize"]
+
+    A --> B --> C --> D --> E
+    E -. "回溯" .-> A
+
+    style A fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style B fill:#50b86c,stroke:#358a4c,color:#fff
+    style C fill:#f5a623,stroke:#c47d0e,color:#fff
+    style D fill:#9b59b6,stroke:#7d3c98,color:#fff
+    style E fill:#e74c3c,stroke:#c0392b,color:#fff
+    </pre>
+  </div>
+
+  <h3 style="color:#fff;margin-bottom:1.5rem;">根据规模自动适配</h3>
+  <div class="steps" style="margin-bottom:3rem;">
+    <div class="step" style="border-top:3px solid var(--green);">
+      <h4>精简模式</h4>
+      <p>改动 &lt; 3 个文件时，合并分析+生成+选择，快速定位方案。</p>
+    </div>
+    <div class="step" style="border-top:3px solid var(--blue);">
+      <h4>标准模式</h4>
+      <p>3-10 个文件，完整五阶段流程，每阶段简洁但不省略。</p>
+    </div>
+    <div class="step" style="border-top:3px solid var(--purple);">
+      <h4>深度模式</h4>
+      <p>&gt; 10 个文件，每阶段详细展开，增加架构评审，考虑分批实施。</p>
+    </div>
+  </div>
+
+  <h3 style="color:#fff;margin-bottom:1.5rem;">5 种场景链式模板</h3>
+  <div class="steps">
+    <div class="step"><h4>新功能开发</h4><p>需求拆解 &rarr; 技术方案 &rarr; 核心实现 &rarr; 测试完善 &rarr; 集成验证</p></div>
+    <div class="step"><h4>Bug 修复</h4><p>复现定位 &rarr; 修复方案 &rarr; 实施修复 &rarr; 回归验证</p></div>
+    <div class="step"><h4>代码重构</h4><p>现状评估 &rarr; 策略规划 &rarr; 安全网构建 &rarr; 逐步重构 &rarr; 验收确认</p></div>
+    <div class="step"><h4>项目脚手架</h4><p>需求收集 &rarr; 结构设计 &rarr; 基础搭建 &rarr; 验证文档</p></div>
+    <div class="step"><h4>文档创作</h4><p>受众分析 &rarr; 内容规划 &rarr; 撰写 &rarr; 审校优化</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== DrawIt Detail ==================== -->
+<section id="drawit">
+  <p class="section-label">Skill 2</p>
+  <h2 class="section-title">DrawIt &mdash; 概念可视化</h2>
+  <p class="section-desc">三阶段交互：理解你想表达什么，帮你选择最合适的工具和样式，快速绘制并迭代到满意。</p>
+
+  <div class="mermaid-wrapper">
+    <pre class="mermaid">
+flowchart LR
+    A["1. 理解意图\nUnderstand"]
+    B["2. 选择方案\nChoose"]
+    C["3. 绘制迭代\nDraw & Refine"]
+
+    A --> B --> C
+    C -. "调整" .-> B
+
+    style A fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style B fill:#f5a623,stroke:#c47d0e,color:#fff
+    style C fill:#50b86c,stroke:#358a4c,color:#fff
+    </pre>
+  </div>
+
+  <h3 style="color:#fff;margin-bottom:1.5rem;">四种绘图工具</h3>
+  <div class="tools-grid" style="margin-bottom:3rem;">
+    <div class="tool-item">
+      <div class="tool-icon">&#128202;</div>
+      <h4>Mermaid</h4>
+      <p>流程图、时序图、类图、ER 图、甘特图等 15 种结构化图表</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#9881;</div>
+      <h4>SVG</h4>
+      <p>自定义图形、图标、信息图，像素级精确控制</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#128187;</div>
+      <h4>HTML</h4>
+      <p>交互式图表、仪表盘、带动画的可视化页面</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#9999;</div>
+      <h4>Excalidraw</h4>
+      <p>手绘风格白板图、头脑风暴、自由草图</p>
+    </div>
+  </div>
+
+  <h3 style="color:#fff;margin-bottom:1.5rem;">10 种绘图模板</h3>
+  <div class="steps">
+    <div class="step"><h4>系统架构图</h4><p>微服务拓扑、分层架构</p></div>
+    <div class="step"><h4>业务流程图</h4><p>审批流程、工作流</p></div>
+    <div class="step"><h4>时序图</h4><p>API 调用链、协议交互</p></div>
+    <div class="step"><h4>ER 图</h4><p>数据库设计、数据建模</p></div>
+    <div class="step"><h4>状态机</h4><p>对象生命周期、状态转换</p></div>
+    <div class="step"><h4>甘特图</h4><p>项目排期、迭代计划</p></div>
+    <div class="step"><h4>思维导图</h4><p>知识梳理、头脑风暴</p></div>
+    <div class="step"><h4>对比图</h4><p>方案对比、技术选型</p></div>
+    <div class="step"><h4>时间线</h4><p>版本演进、里程碑</p></div>
+    <div class="step"><h4>象限图</h4><p>优先级矩阵、二维评估</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== Prompts ==================== -->
+<section id="prompts">
+  <p class="section-label">Examples</p>
+  <h2 class="section-title">典型提示示例</h2>
+  <p class="section-desc">以下提示可以唤醒对应的 Skill，让 AI 自动进入结构化工作流程。</p>
+
+  <div class="prompt-grid">
+    <div class="prompt-card">
+      <span class="prompt-tag chain">Prompt Chaining</span>
+      <div class="prompt-text">帮我给用户模块添加 OAuth2 第三方登录功能，支持 Google 和 GitHub。请先分析再动手。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag chain">Prompt Chaining</span>
+      <div class="prompt-text">这个接口在并发请求时偶尔返回 500，日志显示数据库死锁，请定位根因。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag chain">Prompt Chaining</span>
+      <div class="prompt-text">src/services/order.ts 已经超过 800 行了，帮我拆分重构，不要改变外部行为。给我 2-3 个方案对比。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag drawit">DrawIt</span>
+      <div class="prompt-text">帮我画一张系统架构图，展示前端、API 网关和后端微服务之间的关系。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag drawit">DrawIt</span>
+      <div class="prompt-text">用时序图展示用户登录的完整流程，包括 OAuth2 授权码交换。用 Mermaid。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag drawit">DrawIt</span>
+      <div class="prompt-text">帮我可视化这三个方案的优劣对比，做成交互式的表格，用 HTML。</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== IDE ==================== -->
+<section id="ide">
+  <p class="section-label">Integration</p>
+  <h2 class="section-title">IDE 集成</h2>
+  <p class="section-desc">一行配置即可启用，支持主流 AI IDE。将 SKILL.md 的内容嵌入对应的配置文件即可。</p>
+
+  <div class="ide-grid">
+    <div class="ide-item">
+      <h4>Claude Code</h4>
+      <span class="ide-file">CLAUDE.md</span>
+    </div>
+    <div class="ide-item">
+      <h4>Cursor</h4>
+      <span class="ide-file">.cursorrules</span>
+    </div>
+    <div class="ide-item">
+      <h4>Windsurf</h4>
+      <span class="ide-file">.windsurfrules</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== Quick Start ==================== -->
+<section id="quickstart">
+  <p class="section-label">Quick Start</p>
+  <h2 class="section-title">快速开始</h2>
+  <p class="section-desc">三步将 Skill 集成到你的项目中。</p>
+
+  <div class="steps">
+    <div class="step">
+      <h4>选择 Skill</h4>
+      <p>浏览已收录的技能，找到适合你场景的 Skill。</p>
+    </div>
+    <div class="step">
+      <h4>嵌入配置</h4>
+      <p>将 SKILL.md 的核心流程复制到你的 IDE 配置文件中。</p>
+    </div>
+    <div class="step">
+      <h4>按需使用模板</h4>
+      <p>从 references 目录中选用场景模板，快速上手。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== Principles ==================== -->
+<section id="principles">
+  <p class="section-label">Principles</p>
+  <h2 class="section-title">核心原则</h2>
+
+  <div class="principles">
+    <div class="principle">
+      <span class="principle-num">1</span>
+      <div><strong>逐步精炼优于一步到位</strong><br><span>分阶段处理让每一步都更可控</span></div>
+    </div>
+    <div class="principle">
+      <span class="principle-num">2</span>
+      <div><strong>显式推理优于隐式假设</strong><br><span>把思考过程外化，减少遗漏</span></div>
+    </div>
+    <div class="principle">
+      <span class="principle-num">3</span>
+      <div><strong>多方案对比优于单一路径</strong><br><span>比较才能发现各方案的优劣</span></div>
+    </div>
+    <div class="principle">
+      <span class="principle-num">4</span>
+      <div><strong>上下文感知优于模板套用</strong><br><span>每个项目都有自己的约定，需要尊重</span></div>
+    </div>
+    <div class="principle">
+      <span class="principle-num">5</span>
+      <div><strong>灵活适配优于僵化执行</strong><br><span>流程为人服务，不是人为流程服务</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Footer ==================== -->
+<footer>
+  <p>PromptChain &mdash; MIT License</p>
+  <p style="margin-top:0.5rem;">
+    <a href="https://github.com/Coldplay-now/promptchain">GitHub</a>
+  </p>
+</footer>
+
+<!-- Mermaid JS for live diagrams -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#222240',
+      primaryColor: '#4a90d9',
+      primaryTextColor: '#fff',
+      lineColor: '#555580',
+      fontSize: '14px'
+    },
+    flowchart: { curve: 'basis', padding: 20 }
+  });
+</script>
+
+</body>
+</html>
