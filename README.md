@@ -1,10 +1,23 @@
-# PromptChain — 链式提示技能仓库
+# PromptChain — AI 技能仓库
 
-将复杂任务拆解为有序阶段，逐步精炼，获得高质量结果。
+面向 AI 编程助手的技能（Skill）集合，让 AI 在对话中自动遵循结构化的工作流程。
 
 ## 这是什么
 
-PromptChain 是一套面向 AI 编程助手的**链式提示（Prompt Chaining）**技能定义。它提供一个五阶段工作流程，让 AI 在处理软件工程任务时能够：
+PromptChain 是一个 **AI Skill 仓库**，收录多个可独立使用的技能定义。每个 Skill 定义了一套完整的交互流程，让 AI 编程助手在特定场景下表现得更专业、更可控。
+
+### 已收录的 Skill
+
+| Skill | 用途 | 核心流程 |
+|-------|------|---------|
+| **[Prompt Chaining](prompt-chaining/SKILL.md)** | 将复杂编程任务拆解为有序阶段 | 分析 → 生成 → 选择 → 补充 → 综合 |
+| **[DrawIt](draw-it/SKILL.md)** | 交互式概念可视化，将想法变成图 | 理解意图 → 选择方案 → 绘制迭代 |
+
+---
+
+## Skill 1: Prompt Chaining — 链式提示
+
+将复杂任务拆解为有序阶段，逐步精炼，获得高质量结果。让 AI 在处理软件工程任务时能够：
 
 - 先理解，再动手
 - 多方案对比，择优执行
@@ -64,15 +77,25 @@ flowchart TD
 ## 仓库结构
 
 ```
-prompt-chaining/
-├── SKILL.md                        # 核心技能定义
-│   ├── 触发条件
-│   ├── 五阶段链式流程
-│   ├── 任务规模适配
-│   └── 常见反模式
-└── references/
-    ├── chain-templates.md          # 5 种场景链式模板
-    └── ide-integration.md          # AI IDE 集成指南
+├── prompt-chaining/                    # Skill 1: 链式提示
+│   ├── SKILL.md                        # 核心技能定义
+│   │   ├── 触发条件
+│   │   ├── 五阶段链式流程
+│   │   ├── 任务规模适配
+│   │   └── 常见反模式
+│   └── references/
+│       ├── chain-templates.md          # 5 种场景链式模板
+│       └── ide-integration.md          # AI IDE 集成指南
+│
+└── draw-it/                            # Skill 2: 概念可视化
+    ├── SKILL.md                        # 核心技能定义
+    │   ├── 触发条件
+    │   ├── 三阶段交互流程
+    │   ├── 工具选择决策树
+    │   └── 常见反模式
+    └── references/
+        ├── drawing-templates.md        # 10 种绘图模板
+        └── tool-guide.md              # 四种工具详细指南
 ```
 
 ## 链式模板
@@ -161,11 +184,99 @@ src/services/order.ts 已经超过 800 行了，帮我拆分重构，不要改�
 | `逐步实施，每步告诉我结果` | 在综合阶段保持人机交互 |
 | `这个任务比较复杂，请用链式流程` | 直接指定使用完整五阶段流程 |
 
+---
+
+## Skill 2: DrawIt — 概念可视化
+
+通过交互式对话，将抽象概念变成直观的图形。
+
+```mermaid
+flowchart LR
+    A["1. 理解意图<br/>Understand"] --> B["2. 选择方案<br/>Choose"]
+    B --> C["3. 绘制迭代<br/>Draw & Refine"]
+
+    C -. "不满意时调整" .-> B
+
+    style A fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style B fill:#f5a623,stroke:#c47d0e,color:#fff
+    style C fill:#50b86c,stroke:#358a4c,color:#fff
+```
+
+### 支持的工具
+
+| 工具 | 最佳场景 |
+|------|---------|
+| **Mermaid** | 流程图、时序图、类图、ER 图、甘特图等结构化图表 |
+| **SVG** | 自定义图形、图标、信息图、需要精确控制的视觉元素 |
+| **HTML** | 交互式图表、仪表盘、带动画的可视化 |
+| **Excalidraw** | 手绘风格白板图、头脑风暴、草图 |
+
+### 绘图模板
+
+提供 10 种即用模板：
+
+| 模板 | 适用场景 |
+|------|---------|
+| 系统架构图 | 组件关系、微服务拓扑、分层架构 |
+| 业务流程图 | 操作步骤、审批流程、工作流 |
+| 时序图 | API 调用链、微服务通信 |
+| ER 图 | 数据库设计、数据建模 |
+| 状态机 | 对象生命周期、状态转换 |
+| 甘特图 | 项目排期、迭代计划 |
+| 思维导图 | 知识梳理、头脑风暴 |
+| 对比图 | 方案对比、技术选型 |
+| 时间线 | 版本演进、里程碑 |
+| 象限图 | 优先级矩阵、二维评估 |
+
+详见 [`references/drawing-templates.md`](draw-it/references/drawing-templates.md)
+
+### 典型提示示例
+
+```
+帮我画一张系统架构图，展示前端、API 网关和后端微服务之间的关系。
+```
+
+```
+我想用时序图展示用户登录的完整流程，包括 OAuth2 的授权码交换过程。
+```
+
+```
+把这个状态机画出来：订单从创建到完成有哪些状态转换。用 Mermaid。
+```
+
+```
+帮我可视化这三个方案的优劣对比，做成一个好看的表格，用 HTML。
+```
+
+```
+用 Excalidraw 画个草图，展示我们的数据处理管道。
+```
+
+### 通用触发句式
+
+| 句式 | 效果 |
+|------|------|
+| `帮我画一张...图` | 直接触发 DrawIt，AI 会确认内容后开始绘制 |
+| `帮我可视化...` | 触发 DrawIt，AI 会分析最合适的图形表达 |
+| `用 Mermaid/SVG/HTML 画` | 指定工具，跳过工具选择阶段 |
+| `画个草图/示意图` | 倾向使用 Excalidraw 手绘风格 |
+| `做成交互式的` | 倾向使用 HTML 实现 |
+
+---
+
 ## 快速开始
+
+### Prompt Chaining
 
 1. 将 `prompt-chaining/SKILL.md` 的核心流程嵌入你的 AI IDE 配置文件
 2. 根据需要选用 `references/chain-templates.md` 中的场景模板
 3. 参考 `references/ide-integration.md` 完成 IDE 集成
+
+### DrawIt
+
+1. 将 `draw-it/SKILL.md` 的核心流程嵌入你的 AI IDE 配置文件
+2. 使用 `references/drawing-templates.md` 中的模板作为绘图起点
+3. 参考 `references/tool-guide.md` 了解各工具的能力和最佳实践
 
 ## 核心原则
 
