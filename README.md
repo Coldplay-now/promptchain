@@ -12,6 +12,7 @@ PromptChain 是一个 **AI Skill 仓库**，收录多个可独立使用的技能
 |-------|------|---------|
 | **[Prompt Chaining](prompt-chaining/SKILL.md)** | 将复杂编程任务拆解为有序阶段 | 分析 → 生成 → 选择 → 补充 → 综合 |
 | **[DrawIt](draw-it/SKILL.md)** | 交互式概念可视化，将想法变成图 | 理解意图 → 选择方案 → 绘制迭代 |
+| **[LessonLearn](lesson-learn/SKILL.md)** | 项目经验复盘，生成学习报告 | 扫描 → 聚焦 → 深挖 → 报告 |
 
 ---
 
@@ -87,15 +88,25 @@ flowchart TD
 │       ├── chain-templates.md          # 5 种场景链式模板
 │       └── ide-integration.md          # AI IDE 集成指南
 │
-└── draw-it/                            # Skill 2: 概念可视化
+├── draw-it/                            # Skill 2: 概念可视化
+│   ├── SKILL.md                        # 核心技能定义
+│   │   ├── 触发条件
+│   │   ├── 三阶段交互流程
+│   │   ├── 工具选择决策树
+│   │   └── 常见反模式
+│   └── references/
+│       ├── drawing-templates.md        # 10 种绘图模板
+│       └── tool-guide.md              # 四种工具详细指南
+│
+└── lesson-learn/                       # Skill 3: 项目经验复盘
     ├── SKILL.md                        # 核心技能定义
     │   ├── 触发条件
-    │   ├── 三阶段交互流程
-    │   ├── 工具选择决策树
+    │   ├── 四阶段复盘流程
+    │   ├── 分析维度详解
     │   └── 常见反模式
     └── references/
-        ├── drawing-templates.md        # 10 种绘图模板
-        └── tool-guide.md              # 四种工具详细指南
+        ├── report-template.md          # 报告模板与示例
+        └── analysis-guide.md           # 分析维度指南
 ```
 
 ## 链式模板
@@ -264,6 +275,72 @@ flowchart LR
 
 ---
 
+## Skill 3: LessonLearn — 项目经验复盘
+
+从当前项目中提炼经验教训，生成结构化的学习报告，指导后续开发。
+
+```mermaid
+flowchart LR
+    A["1. 扫描<br/>Scan"] --> B["2. 聚焦<br/>Focus"]
+    B --> C["3. 深挖<br/>Dig"]
+    C --> D["4. 报告<br/>Report"]
+
+    D -. "下次复盘时追加" .-> A
+
+    style A fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style B fill:#f5a623,stroke:#c47d0e,color:#fff
+    style C fill:#e74c3c,stroke:#c0392b,color:#fff
+    style D fill:#50b86c,stroke:#358a4c,color:#fff
+```
+
+### 核心特点
+
+| 特点 | 说明 |
+|------|------|
+| **AI 自适应聚焦** | 根据项目特征自动选择最值得分析的 2-3 个维度 |
+| **深度优先** | 不做泛泛扫描，每条教训都具体到文件、到模式、到行动 |
+| **增量积累** | 报告支持追加，随项目演进持续沉淀经验 |
+| **面向行动** | 每条建议都具体可操作，直接指导后续开发 |
+
+### 分析维度
+
+AI 根据项目信号自动选择，包括但不限于：
+
+| 维度 | 关注点 |
+|------|--------|
+| 代码质量 | 重复代码、文件过长、命名规范、复杂度 |
+| 架构决策 | 模块边界、技术选型、数据流、可扩展性 |
+| Git 历史 | 热点文件、revert 记录、提交模式 |
+| 依赖管理 | 过时依赖、安全漏洞、依赖数量 |
+| 工程实践 | 测试策略、CI/CD、开发体验 |
+
+### 典型提示示例
+
+```
+帮我复盘一下这个项目，总结经验教训。
+```
+
+```
+这个项目开发到现在，有哪些值得记录的经验和教训？生成一份学习报告。
+```
+
+```
+项目 v2.0 刚上线，帮我做一次阶段性总结。
+```
+
+### 通用触发句式
+
+| 句式 | 效果 |
+|------|------|
+| `帮我复盘/总结经验` | 触发完整的四阶段复盘流程 |
+| `生成学习报告` | 直接生成报告文件 |
+| `重点看看架构/测试/依赖` | 指定分析维度，跳过 AI 自动选择 |
+| `追加一次复盘` | 在已有报告基础上增量追加 |
+
+详见 [`references/report-template.md`](lesson-learn/references/report-template.md) 和 [`references/analysis-guide.md`](lesson-learn/references/analysis-guide.md)
+
+---
+
 ## 快速开始
 
 ### Prompt Chaining
@@ -277,6 +354,13 @@ flowchart LR
 1. 将 `draw-it/SKILL.md` 的核心流程嵌入你的 AI IDE 配置文件
 2. 使用 `references/drawing-templates.md` 中的模板作为绘图起点
 3. 参考 `references/tool-guide.md` 了解各工具的能力和最佳实践
+
+### LessonLearn
+
+1. 将 `lesson-learn/SKILL.md` 的核心流程嵌入你的 AI IDE 配置文件
+2. 在项目开发过程中随时要求 AI 进行复盘
+3. 参考 `references/report-template.md` 了解报告格式和示例
+4. 参考 `references/analysis-guide.md` 了解各分析维度的检查点
 
 ## 核心原则
 

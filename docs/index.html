@@ -160,7 +160,7 @@
   /* ===== Skill Cards ===== */
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 2rem;
   }
 
@@ -192,6 +192,7 @@
 
   .skill-card.chain::before { background: linear-gradient(90deg, var(--blue), var(--green)); }
   .skill-card.drawit::before { background: linear-gradient(90deg, var(--orange), var(--red)); }
+  .skill-card.lesson::before { background: linear-gradient(90deg, var(--green), var(--blue)); }
 
   .skill-icon {
     width: 48px;
@@ -205,6 +206,7 @@
   }
   .skill-card.chain .skill-icon { background: rgba(74,144,217,0.15); }
   .skill-card.drawit .skill-icon { background: rgba(245,166,35,0.15); }
+  .skill-card.lesson .skill-icon { background: rgba(80,184,108,0.15); }
 
   .skill-card h3 {
     font-size: 1.4rem;
@@ -262,6 +264,7 @@
     font-family: monospace;
   }
   .skill-card.drawit .feature-list li::before { color: var(--orange); }
+  .skill-card.lesson .feature-list li::before { color: var(--green); }
 
   /* ===== How it works ===== */
   .steps {
@@ -335,6 +338,7 @@
   }
   .prompt-tag.chain { background: rgba(74,144,217,0.15); color: var(--blue); }
   .prompt-tag.drawit { background: rgba(245,166,35,0.15); color: var(--orange); }
+  .prompt-tag.lesson { background: rgba(80,184,108,0.15); color: var(--green); }
 
   .prompt-text {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
@@ -550,6 +554,28 @@
         <li>三套配色方案（专业/简洁/暗色）</li>
       </ul>
     </div>
+
+    <!-- LessonLearn -->
+    <div class="skill-card lesson">
+      <div class="skill-icon">&#128218;</div>
+      <h3>LessonLearn</h3>
+      <p>从项目中提炼经验教训，生成结构化学习报告，指导后续开发。</p>
+      <div class="flow">
+        <span class="flow-step" style="background:var(--blue)">扫描</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--orange)">聚焦</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--red)">深挖</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step" style="background:var(--green)">报告</span>
+      </div>
+      <ul class="feature-list">
+        <li>AI 自动选择最值得分析的维度</li>
+        <li>深度优先，每条教训具体可操作</li>
+        <li>增量追加，持续沉淀项目经验</li>
+        <li>5 大分析维度覆盖项目全貌</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -672,6 +698,78 @@ flowchart LR
 
 <div class="divider"></div>
 
+<!-- ==================== LessonLearn Detail ==================== -->
+<section id="lesson">
+  <p class="section-label">Skill 3</p>
+  <h2 class="section-title">LessonLearn &mdash; 项目经验复盘</h2>
+  <p class="section-desc">四阶段流程：扫描项目全貌，聚焦关键维度，深挖具体教训，生成可追加的学习报告。</p>
+
+  <div class="mermaid-wrapper">
+    <pre class="mermaid">
+flowchart LR
+    A["1. 扫描\nScan"]
+    B["2. 聚焦\nFocus"]
+    C["3. 深挖\nDig"]
+    D["4. 报告\nReport"]
+
+    A --> B --> C --> D
+    D -. "下次复盘追加" .-> A
+
+    style A fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    style B fill:#f5a623,stroke:#c47d0e,color:#fff
+    style C fill:#e74c3c,stroke:#c0392b,color:#fff
+    style D fill:#50b86c,stroke:#358a4c,color:#fff
+    </pre>
+  </div>
+
+  <h3 style="color:#fff;margin-bottom:1.5rem;">五大分析维度</h3>
+  <div class="tools-grid" style="margin-bottom:3rem;">
+    <div class="tool-item">
+      <div class="tool-icon">&#128187;</div>
+      <h4>代码质量</h4>
+      <p>重复代码、文件过长、命名规范、圈复杂度</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#127959;</div>
+      <h4>架构决策</h4>
+      <p>模块边界、技术选型、数据流、可扩展性</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#128200;</div>
+      <h4>Git 历史</h4>
+      <p>热点文件、revert 记录、提交模式、分支策略</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#128230;</div>
+      <h4>依赖管理</h4>
+      <p>过时依赖、安全漏洞、依赖膨胀、锁文件</p>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon">&#9881;</div>
+      <h4>工程实践</h4>
+      <p>测试策略、CI/CD、文档完善度、开发体验</p>
+    </div>
+  </div>
+
+  <h3 style="color:#fff;margin-bottom:1.5rem;">报告特点</h3>
+  <div class="steps">
+    <div class="step" style="border-top:3px solid var(--green);">
+      <h4>深度优先</h4>
+      <p>2-3 个深刻洞察胜过 10 条泛泛之谈，每条教训都具体到文件和行动。</p>
+    </div>
+    <div class="step" style="border-top:3px solid var(--blue);">
+      <h4>增量积累</h4>
+      <p>报告顶部元数据+目录，新内容追加到文尾，经验随项目成长持续沉淀。</p>
+    </div>
+    <div class="step" style="border-top:3px solid var(--orange);">
+      <h4>面向行动</h4>
+      <p>每条建议都可操作，包含行动项清单，直接指导"下次怎么做更好"。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- ==================== Prompts ==================== -->
 <section id="prompts">
   <p class="section-label">Examples</p>
@@ -702,6 +800,18 @@ flowchart LR
     <div class="prompt-card">
       <span class="prompt-tag drawit">DrawIt</span>
       <div class="prompt-text">帮我可视化这三个方案的优劣对比，做成交互式的表格，用 HTML。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag lesson">LessonLearn</span>
+      <div class="prompt-text">帮我复盘一下这个项目，总结经验教训，生成学习报告。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag lesson">LessonLearn</span>
+      <div class="prompt-text">项目 v2.0 刚上线，帮我做一次阶段性总结，重点看看架构和测试。</div>
+    </div>
+    <div class="prompt-card">
+      <span class="prompt-tag lesson">LessonLearn</span>
+      <div class="prompt-text">上次复盘已经过了一个月，帮我追加一次新的复盘到学习报告里。</div>
     </div>
   </div>
 </section>
